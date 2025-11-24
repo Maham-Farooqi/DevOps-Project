@@ -11,7 +11,7 @@ import MySchedule from '../components/MySchedule';
 import ViewPatients from '../components/ViewPatients';
 import Footer from '../components/DFooter';
 import Header from '../components/DHeader';
-
+import PatientHistory from '../components/PatientHistory';
 // Mocks
 global.fetch = jest.fn();
 
@@ -294,4 +294,167 @@ describe('Doctor Components - Integration Tests', () => {
     expect(screen.getByRole('link', { name: /View Patients/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Consultations/i })).toBeInTheDocument();
   });
+
+    // ========== PatientHistory Tests ==========
+  test('renders PatientHistory and displays patient list', async () => {
+    const mockPatients = [
+      { patient_id: 'P001', full_name: 'John Doe', profile: 'patient1' },
+      { patient_id: 'P002', full_name: 'Jane Smith', profile: 'patient2' }
+    ];
+
+    fetch.mockResolvedValueOnce({ ok: true, json: async () => mockPatients });
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <PatientHistory />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Patient History')).toBeInTheDocument();
+      expect(screen.getByText('Select a Patient')).toBeInTheDocument();
+      expect(screen.getByText('John Doe')).toBeInTheDocument();
+      expect(screen.getByText('Jane Smith')).toBeInTheDocument();
+    });
+  });
+
+  test('PatientHistory handles patient selection and fetches history', async () => {
+    const mockPatients = [
+      { patient_id: 'P001', full_name: 'John Doe', profile: 'patient1' }
+    ];
+
+    const mockHistory = [
+      { date: '2024-01-15', diagnosis: 'Common Cold', prescription: 'Rest and fluids' },
+      { date: '2024-03-20', diagnosis: 'Flu', prescription: 'Tamiflu' }
+    ];
+
+    fetch
+      .mockResolvedValueOnce({ ok: true, json: async () => mockPatients })
+      .mockResolvedValueOnce({ ok: true, json: async () => mockHistory });
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <PatientHistory />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(screen.getByText('John Doe')).toBeInTheDocument());
+
+    const patientItem = screen.getByText('John Doe');
+    await user.click(patientItem);
+
+    await waitFor(() => {
+      // Check for the partial text in the heading
+      expect(screen.getByText('History of')).toBeInTheDocument();
+      // Check for the actual history data
+      expect(screen.getByText('Common Cold')).toBeInTheDocument();
+      expect(screen.getByText('Rest and fluids')).toBeInTheDocument();
+      expect(screen.getByText('Flu')).toBeInTheDocument();
+      expect(screen.getByText('Tamiflu')).toBeInTheDocument();
+    });
+
+    expect(fetch).toHaveBeenCalledWith('http://localhost:3002/api/prescriptions/P001');
+  });
+
+  test('PatientHistory shows loading state when fetching history', async () => {
+    const mockPatients = [
+      { patient_id: 'P001', full_name: 'John Doe', profile: 'patient1' }
+    ];
+
+    fetch
+      .mockResolvedValueOnce({ ok: true, json: async () => mockPatients })
+      .mockResolvedValueOnce(new Promise(() => {})); // Never resolve to test loading
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <PatientHistory />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(screen.getByText('John Doe')).toBeInTheDocument());
+
+    const patientItem = screen.getByText('John Doe');
+    await user.click(patientItem);
+
+    expect(screen.getByText('Loading history...')).toBeInTheDocument();
+  });
+
+  test('PatientHistory shows no history message when no data available', async () => {
+    const mockPatients = [
+      { patient_id: 'P001', full_name: 'John Doe', profile: 'patient1' }
+    ];
+
+    fetch
+      .mockResolvedValueOnce({ ok: true, json: async () => mockPatients })
+      .mockResolvedValueOnce({ ok: true, json: async () => [] });
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <PatientHistory />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(screen.getByText('John Doe')).toBeInTheDocument());
+
+    const patientItem = screen.getByText('John Doe');
+    await user.click(patientItem);
+
+    await waitFor(() => {
+      expect(screen.getByText('No history available')).toBeInTheDocument();
+    });
+  });
+
+  test('PatientHistory handles API error when fetching patients', async () => {
+    fetch.mockResolvedValueOnce({ ok: false });
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <PatientHistory />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Patient History')).toBeInTheDocument();
+      expect(screen.getByText('Select a Patient')).toBeInTheDocument();
+    });
+  });
+
+  test('PatientHistory handles API error when fetching history', async () => {
+    const mockPatients = [
+      { patient_id: 'P001', full_name: 'John Doe', profile: 'patient1' }
+    ];
+
+    fetch
+      .mockResolvedValueOnce({ ok: true, json: async () => mockPatients })
+      .mockResolvedValueOnce({ ok: false });
+
+    render(
+      <BrowserRouter>
+        <AuthProvider>
+          <PatientHistory />
+        </AuthProvider>
+      </BrowserRouter>
+    );
+
+    await waitFor(() => expect(screen.getByText('John Doe')).toBeInTheDocument());
+
+    const patientItem = screen.getByText('John Doe');
+    await user.click(patientItem);
+
+    // Should show no history available when API fails
+    await waitFor(() => {
+      expect(screen.getByText('No history available')).toBeInTheDocument();
+    });
+  });
+  
 });
