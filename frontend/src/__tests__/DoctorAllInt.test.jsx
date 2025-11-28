@@ -357,7 +357,7 @@ describe('Doctor Components - Integration Tests', () => {
       expect(screen.getByText('Tamiflu')).toBeInTheDocument();
     });
 
-    expect(fetch).toHaveBeenCalledWith('http://localhost:3002/api/prescriptions/P001');
+    expect(fetch).toHaveBeenCalledWith('http://localhost:3001/api/prescriptions/P001');
   });
 
   test('PatientHistory shows loading state when fetching history', async () => {

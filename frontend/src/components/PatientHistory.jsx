@@ -14,7 +14,7 @@ function PatientHistory() {
         try {
           const user = JSON.parse(sessionStorage.getItem('user'));
           const id=user.doctor_id
-          const response = await fetch(`http://localhost:3002/api/patients/${id}`);
+          const response = await fetch(`http://localhost:3001/api/patients/${id}`);
           if (response.ok) {
             const data = await response.json();
             setPatientsData(data);
@@ -33,7 +33,7 @@ function PatientHistory() {
     const fetchPatientHistory = async (patientId) => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:3002/api/prescriptions/${patientId}`);
+            const response = await fetch(`http://localhost:3001/api/prescriptions/${patientId}`);
             if (response.ok) {
                 const data = await response.json();
                 setPatientHistoryData(data);

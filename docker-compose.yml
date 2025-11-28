@@ -1,0 +1,36 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: maham123
+      MYSQL_DATABASE: healthify
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d  
+
+  backend:
+    build: ./backend
+    container_name: backend_app
+    ports:
+      - "3001:3001"       
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: maham123
+      DB_NAME: healthify
+    depends_on:
+      - mysql
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

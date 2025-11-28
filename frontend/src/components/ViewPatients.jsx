@@ -23,7 +23,7 @@ const ViewPatients = () => {
     try {
       const user = JSON.parse(sessionStorage.getItem('user'));
       const id = user.doctor_id
-      const response = await fetch(`http://localhost:3002/api/patients/${id}`);
+      const response = await fetch(`http://localhost:3001/api/patients/${id}`);
       if (response.ok) {
         const data = await response.json();
         setPatients(data);
@@ -39,7 +39,7 @@ const ViewPatients = () => {
     try {
       // const id = JSON.parse(sessionStorage.getItem('user'))?.user_id || 'D101';
       const id = 'D101'
-      const response = await fetch(`http://localhost:3002/api/diagnosis/${pid}`);
+      const response = await fetch(`http://localhost:3001/api/diagnosis/${pid}`);
       if (response.ok) {
         const data = await response.json();
         setHistoryData(data);
@@ -101,7 +101,7 @@ const ViewPatients = () => {
     console.log("Time:", time); 
   
     try {
-      const response = await fetch(`http://localhost:3002/api/reshedule/${selectedPatientId}`, {
+      const response = await fetch(`http://localhost:3001/api/reshedule/${selectedPatientId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

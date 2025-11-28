@@ -12,7 +12,7 @@ const AdminProfile = () => {
     const user = JSON.parse(sessionStorage.getItem("user")) ;
     const id = user.user_id;
   
-    fetch(`http://localhost:3003/api/admin-profile/${id}`)
+    fetch(`http://localhost:3001/api/admin-profile/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to fetch profile data');

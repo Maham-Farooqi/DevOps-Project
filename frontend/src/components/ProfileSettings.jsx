@@ -44,7 +44,7 @@ const ProfileSettings = () => {
       try {
          // const id = JSON.parse(sessionStorage.getItem('user'))?.user_id || 'D101';
       const id='3'
-        const response = await fetch('http://localhost:3002/api/update-profile', {
+        const response = await fetch('http://localhost:3001/api/update-profile', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

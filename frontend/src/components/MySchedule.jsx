@@ -15,7 +15,7 @@ function MySchedule() {
     try {
      const user = JSON.parse(sessionStorage.getItem("user")) ;
      const id = user.doctor_id;
-      const response = await fetch(`http://localhost:3002/api/appointments/${id}`);
+      const response = await fetch(`http://localhost:3001/api/appointments/${id}`);
       if (response.ok) {
         const data = await response.json();
         setAppointmentsData(data);
@@ -45,7 +45,7 @@ function MySchedule() {
   // Confirm cancellation
   const confirmCancel = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/api/appointments/${appointmentToCancel}/cancel`, {
+      const response = await fetch(`http://localhost:3001/api/appointments/${appointmentToCancel}/cancel`, {
         method: 'PUT',
       });
       if (response.ok) {

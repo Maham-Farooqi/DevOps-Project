@@ -13,7 +13,7 @@ const ManageUser = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('http://localhost:3003/api/users');
+        const response = await fetch('http://localhost:3001/api/users');
         if (!response.ok) {
           throw new Error('Failed to fetch users');
         }
@@ -39,7 +39,7 @@ const ManageUser = () => {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3003/api/users/${userToDelete}`, {
+      const response = await fetch(`http://localhost:3001/api/users/${userToDelete}`, {
         method: 'DELETE',
       });
 

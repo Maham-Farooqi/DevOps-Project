@@ -17,7 +17,7 @@ function DoctorHome() {
   async function loadData() {
     try {
       const id=user.doctor_id
-      const response = await fetch(`http://localhost:3002/api/appointments/${id}`);
+      const response = await fetch(`http://localhost:3001/api/appointments/${id}`);
       if (response.ok) {
         const data = await response.json();
         setAppointmentsData(data);
@@ -85,7 +85,7 @@ function DoctorHome() {
   const confirmCancel = async () => {
     try {
       // Send the request to update the appointment status to 'Cancelled'
-      const response = await fetch(`http://localhost:3002/api/appointments/${appointmentToCancel}/cancel`, {
+      const response = await fetch(`http://localhost:3001/api/appointments/${appointmentToCancel}/cancel`, {
         method: 'PUT',
       });
   
@@ -153,7 +153,7 @@ function DoctorHome() {
           <div className="tile">
             <h2>Reports</h2>
             <FaFileAlt className="tile-icon" />
-            <p>3 Awaiting Review</p>
+            <p> Awaiting Review</p>
             <button className="action-btn" onClick={() => navigate('/doctor/reports')}>
               Review Reports
             </button>

@@ -12,7 +12,7 @@ const DoctorProfile = () => {
       try {
         const user = JSON.parse(sessionStorage.getItem("user"));
         const id = user.user_id;
-        const response = await fetch(`http://localhost:3002/api/doctor-profile/${id}`);
+        const response = await fetch(`http://localhost:3001/api/doctor-profile/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch doctor details");
         }

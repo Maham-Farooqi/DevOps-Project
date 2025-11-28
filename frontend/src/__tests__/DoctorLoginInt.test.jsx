@@ -98,7 +98,7 @@ describe('DoctorLogin Component Integration Tests', () => {
 
     // Verify API call
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3002/doctor/login', {
+      expect(fetch).toHaveBeenCalledWith('http://localhost:3001/doctor/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

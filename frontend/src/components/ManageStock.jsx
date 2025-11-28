@@ -15,7 +15,7 @@ const ManageStock = () => {
   useEffect(() => {
     const fetchMedicines = async () => {
       try {
-        const response = await fetch('http://localhost:3003/api/medicines');
+        const response = await fetch('http://localhost:3001/api/medicines');
         if (!response.ok) {
           throw new Error('Failed to fetch medicines');
         }
@@ -38,7 +38,7 @@ const ManageStock = () => {
     const newStock = Math.max(updatedMedicine.stock + amount, 0); 
 
     try {
-      const response = await fetch(`http://localhost:3003/api/medicines/${id}/stock`, {
+      const response = await fetch(`http://localhost:3001/api/medicines/${id}/stock`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const ManageStock = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3003/api/medicines/${medicineToDelete.medicine_id}`, {
+      const response = await fetch(`http://localhost:3001/api/medicines/${medicineToDelete.medicine_id}`, {
         method: 'DELETE',
       });
 
@@ -85,7 +85,7 @@ const ManageStock = () => {
     }
   
     try {
-      const response = await fetch('http://localhost:3003/api/medicinesadd', {
+      const response = await fetch('http://localhost:3001/api/medicinesadd', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

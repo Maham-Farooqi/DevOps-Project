@@ -271,7 +271,7 @@ describe('Admin Components - Integration Tests', () => {
     );
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3003/api/admin-profile/1');
+      expect(fetch).toHaveBeenCalledWith('http://localhost:3001/api/admin-profile/1');
       expect(screen.getByText('Admin User')).toBeInTheDocument();
       expect(screen.getByText('1990-01-01')).toBeInTheDocument();
       expect(screen.getByText('admin@example.com')).toBeInTheDocument();

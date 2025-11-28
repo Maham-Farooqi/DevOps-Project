@@ -9,7 +9,7 @@ const DoctorLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     
-    const response = await fetch("http://localhost:3002/doctor/login", {
+    const response = await fetch("http://localhost:3001/doctor/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),

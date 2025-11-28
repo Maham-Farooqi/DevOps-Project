@@ -14,7 +14,7 @@ const EditUser = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await fetch(`http://localhost:3003/api/users/${id}`); 
+        const response = await fetch(`http://localhost:3001/api/users/${id}`); 
         if (!response.ok) {
           throw new Error('User not found');
         }
@@ -49,7 +49,7 @@ const EditUser = () => {
     } else {
       try {
         console.log(user)
-        const response = await fetch(`http://localhost:3003/api/users/${id}`, {
+        const response = await fetch(`http://localhost:3001/api/users/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

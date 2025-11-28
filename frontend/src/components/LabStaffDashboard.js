@@ -21,7 +21,7 @@ const LabStaffDashboard = () => {
           <div style={styles.subSections}>
             <div style={styles.subSection}>
               <img src="/calendar.png" alt="Icon 2" style={styles.icon} />
-              <button style={styles.button}onClick={() => navigate('/lab-test')}>View Upcoming Appointments</button>
+              <button style={styles.button}onClick={() => navigate('/upcomingAppointment')}>View Upcoming Appointments</button>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@ const LabStaffDashboard = () => {
             <h1 style={styles.largetextblue}>Generate Lab</h1>
             <h1 style={styles.largetextblue}>Test Reports</h1>
             <div style={styles.leftAlignedButtonContainer}>
-              <button style={styles.button} onClick={() => navigate('/ambulance')}>Generate Reports</button>
+              <button style={styles.button} onClick={() => navigate('/labstaffreport')}>Generate Reports</button>
             </div>
           </div>
           <div style={styles.ambulanceImageContainer}>
