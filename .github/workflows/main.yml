@@ -61,4 +61,4 @@ jobs:
 
 
       - name: Shutdown containers
-        run: docker compose -f docker compose.yml down
+        run: docker compose down
