@@ -15,7 +15,7 @@ async function connectWithRetry() {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
+        database: process.env.DB_NAME
       });
       console.log("Connected to MySQL!");
       connected = true;
@@ -49,6 +49,10 @@ const port = 3001;
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
+
+app.get("/health", (req, res) => {
+  res.send("OK");
+});
 
 app.get("/appointments/:id", async (req, res) => {
     try {
