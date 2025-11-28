@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Run Tests
+    name: Run Frontend Tests 
 
     steps:
       - name: Checkout code
@@ -22,23 +22,37 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Build and start services
+      - name: Build and start all services
         run: docker-compose up -d --build
 
       - name: Wait for MySQL to be ready
         run: |
-          for i in {1..30}; do
+          for i in {1..60}; do
             if docker-compose exec -T mysql_db mysql -uroot -pmaham123 -e "SELECT 1;" healthify 2>/dev/null; then
-              echo "MySQL is ready!"
+              echo "✅ MySQL is ready!"
               break
             fi
-            echo " Waiting for MySQL... ($i/30)"
+            echo "⏳ Waiting for MySQL... ($i/60)"
             sleep 2
           done
 
-
-      - name: Run frontend tests
+      - name: Wait for backend to be ready
         run: |
+          for i in {1..30}; do
+            if curl -f http://localhost:3001/health 2>/dev/null || curl -f http://localhost:3001 2>/dev/null; then
+              echo "✅ Backend is ready!"
+              break
+            fi
+            echo "⏳ Waiting for backend... ($i/30)"
+            sleep 2
+          done
+
+      - name: Check services status
+        run: docker-compose ps
+
+      - name: Run Frontend Tests
+        run: |
+          # Run tests inside frontend container with backend available
           docker-compose exec -T frontend_app npm test -- --watchAll=false --ci --passWithNoTests
 
       - name: Clean up
@@ -64,15 +78,15 @@ jobs:
         run: |
           echo " Tests passed!"
           docker-compose up -d --build
-          sleep 10
+          sleep 15
           docker-compose ps
 
       - name: Verify services are running
         run: |
-          echo "Build successful!"
+          echo " Build successful!"
           echo "Frontend: http://localhost:3000"
-          echo "Backend: http://localhost:3001"
-          echo "MySQL: localhost:3307"
+          echo " Backend: http://localhost:3001"
+          echo " MySQL: localhost:3307"
 
       - name: Clean up
         if: always()
