@@ -94,7 +94,7 @@ describe('LoginPage with AuthContext Integration Tests', () => {
   test('incorrect credentials', async () => {
   fetch.mockResolvedValueOnce({
     ok: false,
-    json: async () => ({ success: false, message: 'Invalid credentials' })
+    json: async () => ({ success: false, message: 'Invalid credentials!' })
   });
 
   render(
