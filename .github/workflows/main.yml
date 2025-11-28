@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: Run Frontend Tests 
+    name: Run Tests
 
     steps:
       - name: Checkout code
@@ -20,15 +20,18 @@ jobs:
       - name: Set up Docker Compose
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose
+          sudo apt-get install -y docker-compose netcat
 
-      - name: Build and start all services
-        run: docker-compose up -d --build
+      - name: Build services
+        run: docker-compose build
 
-      - name: Wait for MySQL to be ready
+      - name: Start MySQL only first
         run: |
+          docker-compose up -d mysql_db
+          echo "Waiting for MySQL to be ready..."
+          # Wait specifically for MySQL
           for i in {1..60}; do
-            if docker-compose exec -T mysql_db mysql -uroot -pmaham123 -e "SELECT 1;" healthify 2>/dev/null; then
+            if docker-compose exec mysql_db mysql -uroot -pmaham123 -e "SELECT 1;" healthify 2>/dev/null; then
               echo "✅ MySQL is ready!"
               break
             fi
@@ -36,10 +39,13 @@ jobs:
             sleep 2
           done
 
-      - name: Wait for backend to be ready
+      - name: Start backend and wait for it
         run: |
+          docker-compose up -d backend_app
+          echo "Waiting for backend to be ready..."
+          # Wait for backend
           for i in {1..30}; do
-            if curl -f http://localhost:3001/health 2>/dev/null || curl -f http://localhost:3001 2>/dev/null; then
+            if curl -f http://localhost:3001/ 2>/dev/null || curl -f http://localhost:3001/health 2>/dev/null; then
               echo "✅ Backend is ready!"
               break
             fi
@@ -47,13 +53,21 @@ jobs:
             sleep 2
           done
 
-      - name: Check services status
-        run: docker-compose ps
+      - name: Start frontend
+        run: docker-compose up -d frontend_app
+
+      - name: Verify all services
+        run: |
+          sleep 5
+          docker-compose ps
+          echo "Services status:"
+          echo "MySQL: localhost:3307"
+          echo "Backend: localhost:3001" 
+          echo "Frontend: localhost:3000"
 
       - name: Run Frontend Tests
         run: |
-          # Run tests inside frontend container with backend available
-          docker-compose exec -T frontend_app npm test -- --watchAll=false --ci --passWithNoTests
+          docker-compose exec -T frontend_app npm test -- --watchAll
 
       - name: Clean up
         if: always()
@@ -74,19 +88,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Build and start production services
+      - name: Build and start services
         run: |
-          echo " Tests passed!"
           docker-compose up -d --build
-          sleep 15
+          # Give more time for startup
+          sleep 45
           docker-compose ps
+          docker-compose logs
 
-      - name: Verify services are running
+      - name: Verify deployment
         run: |
-          echo " Build successful!"
-          echo "Frontend: http://localhost:3000"
-          echo " Backend: http://localhost:3001"
-          echo " MySQL: localhost:3307"
+          echo "🚀 Deployment completed!"
+          echo "📱 Frontend: http://localhost:3000"
+          echo "🔧 Backend: http://localhost:3001"
+          echo "🗄️ MySQL: localhost:3307"
 
       - name: Clean up
         if: always()
