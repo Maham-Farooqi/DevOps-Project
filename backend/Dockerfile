@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-COPY mysqlserver.js ./
+COPY . .
 
 EXPOSE 3001
 
