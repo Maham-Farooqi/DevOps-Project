@@ -50,11 +50,11 @@ jobs:
 
       - name: Run frontend tests
         run: |
-          docker exec frontend_app npm test -- --watchAll=false --coverage
+          docker exec frontend_app npm test -- --watchAll=false
 
       - name: Run backend tests
         run: |
-          docker exec backend_app npm test -- --watchAll=false --coverage
+          docker exec backend_app npm test -- --watchAll=false 
 
 
       - name: Dump logs on failure
